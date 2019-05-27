@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+    </ion-title>
+    <ion-searchbar [(ngModel)]="searchTerms" (ionChange)="setFilteredItems()"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-list>
+      <ion-list-header>
+        <ion-label>List of Stations</ion-label>
+      </ion-list-header>
+      <ion-item *ngFor="let station of stationsList" (click)="bikeStationDetail(station._id)">
+        <ion-label>{{station.station}}</ion-label>
+        <ion-label>{{station.state}}</ion-label>
+        <ion-label>{{station.description}}</ion-label>
+      </ion-item>
+    </ion-list>
+</ion-content>
