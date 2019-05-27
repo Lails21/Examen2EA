@@ -1,45 +1,51 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
-    </ion-buttons>
-    <ion-title class="title-nav">{{stationBikeDetail.station}}</ion-title>
+  <ion-toolbar color="primary">
+      <ion-buttons slot="start" [routerLink]="['/home']">
+        <ion-icon name="arrow-back"></ion-icon></ion-buttons>
+    <ion-title>Station: {{ station.station }}</ion-title>
   </ion-toolbar>
 </ion-header>
-
-<ion-content>
-  <ion-list>
-    <ion-list-header>
-      <ion-label><b>Current Bikes</b></ion-label>
-    </ion-list-header>
-    <ion-item-sliding *ngFor="let bike of stationBikeDetail.bike; let i=index">
-      <ion-item>
-        <ion-label>{{bike.bike}}</ion-label>
-        <ion-label>{{bike.kms}}</ion-label>
-        <ion-label>{{bike.description}}</ion-label>
-      </ion-item>
-      <ion-item-options side="end">
-        <ion-button (click)="presentAlert(bike._id, i)" color="danger">
-          <ion-icon name="trash"></ion-icon>
-        </ion-button>
-      </ion-item-options>
-    </ion-item-sliding>
-  </ion-list>
-  <ion-list>
-    <ion-list-header>
-      <ion-label><b>Unassigned Bikes</b></ion-label>
-    </ion-list-header>
-    <ion-item-sliding *ngFor="let bike of unassignedBikes; let i=index">
-      <ion-item>
-        <ion-label>{{bike.bike}}</ion-label>
-        <ion-label>{{bike.kms}}</ion-label>
-        <ion-label>{{bike.description}}</ion-label>
-      </ion-item>
-      <ion-item-options side="end">
-        
-          <ion-icon name="add"></ion-icon>
-        
-      </ion-item-options>
-    </ion-item-sliding>
-  </ion-list>
-</ion-content>
+  <ion-content>
+      <ion-list>
+        <ion-list-header>
+          <ion-label>ASSIGNED BIKES</ion-label>
+        </ion-list-header>
+        <ion-list-header>
+          <ion-label>NAME</ion-label>
+            <ion-label>KMS</ion-label>
+            <ion-label>DESCRIPTION</ion-label>
+            <ion-label>DELETE</ion-label>
+          </ion-list-header>
+        <ion-item  *ngFor="let bike of station.bike; let i = index">
+          <ion-label>{{bike.bike}}</ion-label>
+          <ion-label>{{bike.kms}}</ion-label>
+          <ion-label>{{bike.description}}</ion-label>
+          <ion-button (click)="deleteBikeStation(bike._id, i)" color="danger">
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
+          <!--<ion-button shape="round" fill="outline" color="danger" expand="full" (click)="deleteBikeStation(bike._id)">Delete</ion-button>-->
+        </ion-item>
+       </ion-list>
+  </ion-content>
+    <ion-content>
+        <ion-list>
+          <ion-list-header>
+            <ion-label>UNASSIGNED BIKES</ion-label>
+          </ion-list-header>
+          <ion-list-header>
+            <ion-label>BIKE NAME</ion-label>
+              <ion-label>DESCRIPTION</ion-label>
+              <ion-label>STATE</ion-label>
+              <ion-label>DETAILS</ion-label>
+            </ion-list-header>
+          <ion-item  *ngFor="let bike of bikesList">
+            <ion-label>{{bike.bike}}</ion-label>
+            <ion-label>{{bike.kms}}</ion-label>
+            <ion-label>{{bike.description}}</ion-label>
+            <ion-button (click)="putBikeStation(bike._id)" color="success">
+              <ion-icon name="add"></ion-icon>
+            </ion-button>
+            <!--<ion-button shape="round" fill="outline" color="danger" expand="full" (click)="putBikeStation(bike._id)">Add</ion-button>-->
+          </ion-item>
+         </ion-list>
+    </ion-content>

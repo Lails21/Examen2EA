@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {Station} from '../../models/station';
-import {Bike} from '../../models/bike';
-import {ActivatedRoute} from '@angular/router';
-import {StationService} from '../../services/station.service';
-import {BikeService} from '../../services/bike.service';
-import {AlertController} from "@ionic/angular";
+import { Station } from 'src/app/models/station';
+import { Bike } from 'src/app/models/bike';
+import { ActivatedRoute } from '@angular/router';
+import { StationService } from 'src/app/services/station.service';
+import { BikeService } from 'src/app/services/bike.service';
 
 @Component({
   selector: 'app-list',
@@ -12,88 +11,81 @@ import {AlertController} from "@ionic/angular";
   styleUrls: ['list.page.scss']
 })
 export class ListPage implements OnInit {
-  stationBikeDetail: Station;
-  unassignedBikes: Bike[];
-  body: object;
+  station: Station;
+  bikesList: Bike[] = [];
+  stationId: string;
+  bikeId: string;
 
-  constructor(private activatedRouter: ActivatedRoute, private stationService: StationService, private bikeService: BikeService,
-              private alertController: AlertController) {
-    this.stationBikeDetail = new Station();
-    this.unassignedBikes = [];
+  constructor(private activatedRouter: ActivatedRoute, private stationService: StationService, private bikeService: BikeService) { 
+    this.station = new Station();
+    this.stationId="";
   }
 
   ngOnInit() {
-    this.activatedRouter.params.subscribe(params => {
-      if (typeof params.stationId !== 'undefined') {
-        this.stationBikeDetail._id = params.stationId;
-      } else {
-        this.stationBikeDetail._id = '';
+    this.activatedRouter.params.subscribe(params =>{
+      if (typeof params ['id'] !== 'undefined'){
+        this.station._id = params['id'];
+      }
+      else{
+        this.station._id = '';
       }
     });
-    this.getBikeDetail(this.stationBikeDetail._id);
-    this.getUnassignedBikes();
+    this.getBikes();
+    this.getInfoStation(this.station._id);
   }
 
-  async presentAlert(id: string, i: number) {
-    const alert = await this.alertController.create({
-      subHeader: 'Be careful!',
-      message: 'Are you sure you want to delete this bike?',
-      buttons: [{
-        text: 'Cancel'
-      }, {
-        text: 'Delete',
-        handler: () => {
-          this.deleteBikeStation(id, i);
-        }
-      }]
+  getBikes(){
+    this.bikeService.getBikes()
+      .subscribe(res => {
+        this.bikesList= res;
+        console.log("Hola");
+        console.log(res);
+      });
+  }
+
+  getInfoStation(_id: string){
+    this.stationService.getStationDetail(_id)
+    .subscribe(res => {
+      this.station = res;
+    console.log(res);
+    console.log(_id); 
+    console.log(this.station);
     });
+    this.stationId = _id;
 
-    await alert.present();
   }
 
-  async getUnassignedBikes() {
-    await this.bikeService.getBikes()
-        .subscribe(res => {
-          console.log(res);
-          this.unassignedBikes = res as Bike[];
-        });
-    console.log(this.unassignedBikes);
+  putBikeStation(_id: string){
+    this.bikeId = _id;
+    console.log("Station" + this.stationId);
+    console.log("Student" + this.bikeId);
+
+    this.stationService.putBikeStation(this.stationId, this.bikeId)
+    .subscribe(res => {
+      this.getBikes();
+      this.getInfoStation(this.stationId);
+    }); 
+  
   }
 
-  async getBikeDetail(id: string) {
-    await this.stationService.getStationDetail(id)
-        .subscribe(res => {
-          console.log(res);
-          this.stationBikeDetail = res as Station;
-        });
-    console.log(this.stationBikeDetail);
+  deleteBikeStation(_id: string, i: number){
+    this.bikeId = _id;
+    console.log("Station" + this.stationId);
+    console.log("Student" + this.bikeId);
+
+    this.stationService.deleteBikeStation(this.stationId, this.bikeId)
+    .subscribe(res => {
+      //this.getBikes();
+      console.log("DELETE BIKES!!!!!!!!!");
+      this.station.bike.splice(i, 1);
+      this.getInfoStation(this.stationId);
+    },
+    (error)=> {
+        console.log("EEEEEROR ", error);
+        console.log("bici  a esborrar ", i);
+        
+        this.station.bike.splice(i, 1);
+      });
   }
 
-  async deleteBikeStation(id: string, i: number) {
-    await this.stationService.deleteBikeStation(this.stationBikeDetail._id, id)
-          .subscribe(res => {
-                console.log(res);
-                this.stationBikeDetail.bike.splice(i, 1);
-                this.getUnassignedBikes();
-              },
-              err => {
-                console.log(err);
-              });
-  }
-
- /* async addBikeStation(id: string, i: number) {
-    this.body = {
-      stationId: this.stationBikeDetail._id,
-      bikeId: id
-    };
-    await this.stationService.putBikeStation(this.body)
-        .subscribe(res => {
-              console.log(res);
-              this.unassignedBikes.splice(i, 1);
-              this.getBikeDetail(this.stationBikeDetail._id);
-            },
-            err => {
-              console.log(err);
-            });
-  }*/
 }

@@ -3,16 +3,19 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>
-    </ion-title>
-    <ion-searchbar [(ngModel)]="searchTerms" (ionChange)="setFilteredItems()"></ion-searchbar>
+    <ion-title>LIST OF STATIONS</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+    <ion-searchbar animated="true" showCancelButton="false" [(ngModel)]="searchTerms" (ionChange)="setFilteredItems()"></ion-searchbar>
+
     <ion-list>
       <ion-list-header>
-        <ion-label>List of Stations</ion-label>
+        
+          <ion-label>NAME</ion-label>
+            <ion-label>STATE</ion-label>
+            <ion-label>DESCRIPTION</ion-label>
       </ion-list-header>
       <ion-item *ngFor="let station of stationsList" (click)="bikeStationDetail(station._id)">
         <ion-label>{{station.station}}</ion-label>
